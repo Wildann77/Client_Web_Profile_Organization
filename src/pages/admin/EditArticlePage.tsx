@@ -1,0 +1,74 @@
+import { useNavigate, useParams } from 'react-router-dom';
+import { useAdminArticle, useUpdateArticle } from '@/features/articles/hooks/useArticles';
+import { ArticleForm } from '@/features/articles/components/ArticleForm';
+import { AdminLayout } from '@/features/admin/components/AdminLayout';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
+
+export const EditArticlePage = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  
+  const { data: article, isLoading } = useAdminArticle(id || '');
+  const updateArticle = useUpdateArticle();
+
+  const handleSubmit = async (data: any) => {
+    if (!id) return;
+    
+    try {
+      await updateArticle.mutateAsync({ id, data });
+      toast.success('Artikel berhasil diperbarui');
+      navigate('/admin/artikel');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Gagal memperbarui artikel');
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <AdminLayout>
+        <div className="flex justify-center items-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </AdminLayout>
+    );
+  }
+
+  if (!article) {
+    return (
+      <AdminLayout>
+        <div className="text-center py-12">
+          <h2 className="text-xl font-bold mb-2">Artikel tidak ditemukan</h2>
+          <Link to="/admin/artikel">
+            <Button>Kembali ke Daftar Artikel</Button>
+          </Link>
+        </div>
+      </AdminLayout>
+    );
+  }
+
+  return (
+    <AdminLayout>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center gap-4">
+          <Link to="/admin/artikel">
+            <Button variant="ghost" size="icon">
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+          </Link>
+          <h1 className="text-2xl font-bold">Edit Artikel</h1>
+        </div>
+
+        {/* Form */}
+        <ArticleForm
+          article={article}
+          onSubmit={handleSubmit}
+          isSubmitting={updateArticle.isPending}
+        />
+      </div>
+    </AdminLayout>
+  );
+};
