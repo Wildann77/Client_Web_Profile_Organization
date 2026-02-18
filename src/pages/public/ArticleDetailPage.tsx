@@ -1,7 +1,8 @@
 import { Link, useParams } from 'react-router-dom';
 import { usePublicArticle } from '@/features/articles/hooks/useArticles';
+import { ArticleDetailSkeleton } from '@/features/articles/components/ArticleDetailSkeleton';
 import { Button } from '@/components/ui/button';
-import { Loader2, ArrowLeft, Calendar, User, Eye } from 'lucide-react';
+import { ArrowLeft, Calendar, User, Eye } from 'lucide-react';
 import { formatDate } from '@/shared/lib/utils';
 
 export const ArticleDetailPage = () => {
@@ -9,11 +10,7 @@ export const ArticleDetailPage = () => {
   const { data: article, isLoading, error } = usePublicArticle(slug || '');
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <ArticleDetailSkeleton />;
   }
 
   if (error || !article) {

@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 import { usePublicArticles } from '@/features/articles/hooks/useArticles';
 import { ArticleList } from '@/features/articles/components/ArticleList';
+import { ArticleListSkeleton } from '@/features/articles/components/ArticleListSkeleton';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Loader2, ArrowRight, Target, History, Users, MapPin, Newspaper } from 'lucide-react';
+import { ArrowRight, Target, History, Users, MapPin, Newspaper } from 'lucide-react';
 
 import { useSetting } from '@/features/settings/hooks/useSettings';
 
