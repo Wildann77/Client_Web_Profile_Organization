@@ -1,7 +1,7 @@
 import axios, { type AxiosError, type AxiosRequestConfig } from 'axios';
 import type { ApiResponse } from '../types';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || '/api/v1';
 
 // Create axios instance
 export const api = axios.create({
