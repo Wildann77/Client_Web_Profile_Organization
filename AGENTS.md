@@ -82,6 +82,7 @@ src/
       profile/   # Organization profile pages (Visi-Misi, Sejarah, etc.)
     admin/       # Admin dashboard pages
   shared/
+    components/  # Shared components (ErrorBoundary)
     lib/         # Shared utilities (api.ts)
     types/       # Global TypeScript types
 ```
@@ -105,6 +106,12 @@ src/
 - API errors: Throw in API layer, catch in hooks/components
 - Use `sonner` for toast notifications
 - Form validation errors: Display inline with field messages
+- **Global Errors**: Wrapped with `ErrorBoundary` in `main.tsx`. Custom fallback can be provided via `fallback` prop.
+
+### Loading Patterns
+- **Standard**: Use Skeleton components instead of spinners for a "premium" feel.
+- **Location**: Feature-specific skeletons go in `features/{feature}/components/` (e.g., `ArticleListSkeleton`).
+- **Implementation**: Check `isLoading` from TanStack Query and render the skeleton.
 
 ### API Pattern
 ```typescript

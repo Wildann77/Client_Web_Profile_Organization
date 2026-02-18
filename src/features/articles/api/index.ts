@@ -63,71 +63,35 @@ export const articlesApi = {
   },
 };
 
+const _upload = async (file: File, endpoint: string): Promise<UploadResult> => {
+  const formData = new FormData();
+  formData.append('image', file);
+
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/upload/${endpoint}`, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('accessToken') || ''}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Upload failed');
+  }
+
+  const result = await response.json();
+  return result.data;
+};
+
 export const uploadApi = {
-  // Upload image
-  uploadImage: async (file: File): Promise<UploadResult> => {
-    const formData = new FormData();
-    formData.append('image', file);
+  // Upload image (general/content)
+  uploadImage: (file: File) => _upload(file, 'image'),
 
-    const response = await fetch('/api/v1/upload/image', {
-      method: 'POST',
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken') || ''}`,
-      },
-    });
+  // Upload thumbnail (articles)
+  uploadThumbnail: (file: File) => _upload(file, 'thumbnail'),
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Upload failed');
-    }
-
-    const result = await response.json();
-    return result.data;
-  },
-
-  // Upload thumbnail
-  uploadThumbnail: async (file: File): Promise<UploadResult> => {
-    const formData = new FormData();
-    formData.append('image', file);
-
-    const response = await fetch('/api/v1/upload/thumbnail', {
-      method: 'POST',
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken') || ''}`,
-      },
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Upload failed');
-    }
-
-    const result = await response.json();
-    return result.data;
-  },
-
-  // Upload setting image (hero, etc)
-  uploadSettingImage: async (file: File): Promise<UploadResult> => {
-    const formData = new FormData();
-    formData.append('image', file);
-
-    const response = await fetch('/api/v1/upload/settings', {
-      method: 'POST',
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken') || ''}`,
-      },
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Upload failed');
-    }
-
-    const result = await response.json();
-    return result.data;
-  },
+  // Upload setting image (hero, logo, etc)
+  uploadSettingImage: (file: File) => _upload(file, 'settings'),
 };
 
