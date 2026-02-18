@@ -2,12 +2,14 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { LoginForm } from '@/features/auth/components/LoginForm';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useEffect } from 'react';
-import { Newspaper } from 'lucide-react';
+import { useSetting } from '@/features/settings/hooks/useSettings';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated } = useAuth();
+  const siteName = useSetting('site_name');
+  const siteLogo = useSetting('site_logo');
 
   // Redirect if already logged in
   useEffect(() => {
@@ -23,24 +25,25 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 text-foreground">
       <div className="mb-8 text-center">
-        <div className="flex items-center justify-center gap-2 mb-4">
-          <Newspaper className="h-10 w-10 text-primary" />
-        <span className="font-bold text-2xl">Admin Panel</span>
+        <div className="flex flex-col items-center gap-4 mb-4">
+          {siteLogo ? (
+            <img src={siteLogo} alt={siteName || 'Logo'} className="h-16 w-16 object-contain" />
+          ) : (
+            <div className="h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center">
+              <span className="text-primary font-bold text-2xl">{siteName?.charAt(0) || 'A'}</span>
+            </div>
+          )}
+          <h1 className="font-bold text-2xl">{siteName || 'Admin Panel'}</h1>
         </div>
-        <p className="text-muted-foreground">
-          Web Profil Organisasi
+        <p className="text-muted-foreground italic">
+          Login ke Panel Kontrol
         </p>
       </div>
 
       <LoginForm onSuccess={handleSuccess} />
 
-      <p className="mt-8 text-sm text-muted-foreground text-center">
-        Default login:<br />
-        Email: admin@organisasi.com<br />
-        Password: admin123
-      </p>
     </div>
   );
 };

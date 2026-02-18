@@ -67,16 +67,19 @@ src/
   components/
     ui/          # shadcn/ui components (don't modify)
     editor/      # Tiptap editor components
+    layout/      # Reusable layout components (Header, Footer, PublicLayout)
   features/
     {feature}/
       api/       # API functions
       components/# Feature-specific components
       hooks/     # Feature-specific hooks
+      schemas/   # Zod validation schemas
       stores/    # Zustand stores
   hooks/         # Global hooks
   lib/           # Utilities (cn function)
   pages/         # Route components
     public/      # Public-facing pages
+      profile/   # Organization profile pages (Visi-Misi, Sejarah, etc.)
     admin/       # Admin dashboard pages
   shared/
     lib/         # Shared utilities (api.ts)
@@ -84,10 +87,14 @@ src/
 ```
 
 ### Styling (Tailwind CSS v4)
-- Use `@theme` for CSS variables in `index.css`
-- Utility classes with `cn()` from `@/lib/utils` for conditional classes
+- Dark Mode: Uses `ThemeProvider` with `localStorage` persistence
+- Theme Variables: Defined in `index.css` using `oklch`
+- Color Tokens: Use semantic tokens instead of static colors:
+  - `bg-background`, `bg-card`, `bg-muted`, `bg-accent`
+  - `text-foreground`, `text-muted-foreground`, `text-primary`
+  - `border`, `input`, `ring`
+- Utility classes with `cn()` from `@/shared/lib/utils` for conditional classes
 - Follow shadcn patterns: `data-slot` attributes, semantic color tokens
-- Custom animations defined in `tailwind.config.js`
 
 ### State Management
 - **Global state**: Zustand with persistence middleware when needed
@@ -133,14 +140,57 @@ export const useCreateItem = () => {
 };
 ```
 
-### Form Pattern
+### Layout Patterns
+- **Public Layout**: All public-facing pages must be wrapped with `PublicLayout` in `App.tsx`.
+- **Reusable Components**: Layout-related components like `Header` and `Footer` must reside in `src/components/layout/`.
+- **Admin Layout**: Admin pages use `AdminLayout` from `features/admin/components/`.
+- **Dynamic Data**: `Header` and `Footer` MUST NOT hardcode site identity, contact, or social media info. Always use `useSetting(key)` from `@/features/settings/hooks/useSettings`.
+
 ```typescript
-const form = useForm<FormValues>({
-  resolver: zodResolver(formSchema),
+// App.tsx routing pattern
+<Route element={<PublicLayout />}>
+  <Route path="/" element={<HomePage />} />
+  <Route path="/artikel" element={<ArticlesPage />} />
+  <Route path="/profil/visi-misi" element={<VisionMissionPage />} />
+  <Route path="/profil/sejarah" element={<HistoryPage />} />
+</Route>
+```
+
+### Settings Pattern
+- **Public data** (site name, contact, social): use `useSetting(key)` or `usePublicSettings()` — hits `/api/v1/settings/public`.
+- **Admin data** (all settings): use `useAdminSettings()` — hits `/api/v1/settings` (requires ADMIN role).
+- **Mutations**: use `useUpdateBulkSettings()` for saving multiple fields at once.
+- **Cache invalidation**: mutations automatically invalidate both admin and public query keys.
+- **Fallback**: always provide a sensible fallback string when using `useSetting()`.
+
+### Users Management Pattern
+- **Access**: Only for `ADMIN` role. Route: `/admin/pengguna`. 
+- **Toggling Status**: Use `useToggleUserStatus` mutation hook for `isActive` toggle.
+- **Form Handling**: Use `UserForm` which integrates with `react-hook-form` and `zod`.
+- **Cache**: Admin user list uses the query key `['admin', 'users']`. Mutations invalidate this key.
+
+```typescript
+import { useSetting } from '@/features/settings/hooks/useSettings';
+
+// In any component
+const siteName = useSetting('site_name');    // string, '' if not set
+const email    = useSetting('contact_email');
+const display  = siteName || 'Organisasi Kami'; // always provide fallback
+```
+
+### Form Pattern
+- **Schema Location**: All Zod schemas must be placed in `features/{feature}/schemas/`.
+- **Validation**: Use React Hook Form + @hookform/resolvers/zod.
+
+```typescript
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { itemSchema, type ItemFormData } from '../schemas/itemSchema';
+
+const form = useForm<ItemFormData>({
+  resolver: zodResolver(itemSchema),
   defaultValues: { ... },
 });
-
-// Use shadcn Form, FormField, FormItem components
 ```
 
 ### Common Libraries

@@ -37,8 +37,8 @@ export const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) 
   if (variant === 'featured') {
     return (
       <Link to={`/artikel/${article.slug}`}>
-        <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-          <div className="aspect-video bg-gray-100 relative">
+        <Card className="overflow-hidden hover:shadow-lg transition-shadow border">
+          <div className="aspect-video bg-muted relative">
             {article.thumbnailUrl ? (
               <img
                 src={article.thumbnailUrl}
@@ -46,8 +46,8 @@ export const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) 
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-                <span className="text-gray-400 text-4xl">📰</span>
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted to-accent">
+                <span className="text-muted-foreground text-4xl">📰</span>
               </div>
             )}
           </div>
@@ -73,7 +73,7 @@ export const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) 
   return (
     <Link to={`/artikel/${article.slug}`}>
       <Card className="overflow-hidden hover:shadow-md transition-shadow h-full flex flex-col">
-        <div className="aspect-video bg-gray-100 relative">
+        <div className="aspect-video bg-muted relative">
           {article.thumbnailUrl ? (
             <img
               src={article.thumbnailUrl}
@@ -81,8 +81,8 @@ export const ArticleCard = ({ article, variant = 'default' }: ArticleCardProps) 
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-              <span className="text-gray-400 text-3xl">📰</span>
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted to-accent">
+              <span className="text-muted-foreground text-3xl">📰</span>
             </div>
           )}
         </div>

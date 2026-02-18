@@ -83,3 +83,13 @@ export interface DashboardStats {
   };
   recentArticles: Article[];
 }
+// Setting types
+export interface Setting {
+  id: string;
+  key: string;
+  value: string;
+  description: string | null;
+  isPublic: boolean;
+  updatedAt: string;
+  updatedBy: string | null;
+}

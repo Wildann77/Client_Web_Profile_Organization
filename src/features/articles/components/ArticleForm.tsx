@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { TiptapEditor } from '@/components/editor/TiptapEditor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,21 +13,7 @@ import { Loader2, ImageIcon, X } from 'lucide-react';
 import { useUploadThumbnail } from '../hooks/useArticles';
 import { generateSlug } from '@/shared/lib/utils';
 import type { Article } from '@/shared/types';
-
-const articleSchema = z.object({
-  title: z.string().min(5, 'Judul minimal 5 karakter').max(200, 'Judul maksimal 200 karakter'),
-  slug: z.string().min(3, 'Slug minimal 3 karakter').regex(/^[a-z0-9-]+$/, 'Slug hanya boleh huruf kecil, angka, dan tanda hubung'),
-  content: z.string().min(50, 'Konten minimal 50 karakter'),
-  excerpt: z.string().max(500, 'Ringkasan maksimal 500 karakter').optional(),
-  thumbnailUrl: z.string().optional(),
-  status: z.enum(['DRAFT', 'PUBLISHED', 'ARCHIVED']),
-  visibility: z.enum(['PUBLIC', 'PRIVATE', 'MEMBERS_ONLY']),
-  metaTitle: z.string().max(70, 'Meta title maksimal 70 karakter').optional(),
-  metaDescription: z.string().max(160, 'Meta description maksimal 160 karakter').optional(),
-  publishedAt: z.string().optional(),
-});
-
-type ArticleFormData = z.infer<typeof articleSchema>;
+import { articleSchema, type ArticleFormData } from '../schemas/articleSchema';
 
 interface ArticleFormProps {
   article?: Article;
@@ -163,8 +148,8 @@ export const ArticleForm = ({ article, onSubmit, isSubmitting = false }: Article
                       </button>
                     </div>
                   ) : (
-                    <div className="w-32 h-20 bg-gray-100 rounded-lg flex items-center justify-center">
-                      <ImageIcon className="w-8 h-8 text-gray-400" />
+                    <div className="w-32 h-20 bg-muted rounded-lg flex items-center justify-center">
+                      <ImageIcon className="w-8 h-8 text-muted-foreground" />
                     </div>
                   )}
                   <div>
