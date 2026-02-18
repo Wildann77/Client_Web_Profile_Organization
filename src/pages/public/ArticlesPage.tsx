@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 import { usePublicArticles } from '@/features/articles/hooks/useArticles';
-import { ArticleList } from '@/features/articles/components/ArticleList';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, ArrowLeft, Search } from 'lucide-react';
+import { ArrowLeft, Search } from 'lucide-react';
+import { ArticleList } from '@/features/articles/components/ArticleList';
+import { ArticleListSkeleton } from '@/features/articles/components/ArticleListSkeleton';
 import { useState } from 'react';
 
 export const ArticlesPage = () => {
@@ -45,9 +46,7 @@ export const ArticlesPage = () => {
 
       {/* Articles */}
       {isLoading ? (
-        <div className="flex justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
+        <ArticleListSkeleton count={12} columns={3} />
       ) : (
         <ArticleList articles={data?.articles || []} columns={3} />
       )}
