@@ -14,7 +14,7 @@ export interface CreateArticleInput {
   publishedAt?: string;
 }
 
-export interface UpdateArticleInput extends Partial<CreateArticleInput> {}
+export interface UpdateArticleInput extends Partial<CreateArticleInput> { }
 
 export interface ArticlesResponse {
   articles: Article[];
@@ -107,4 +107,27 @@ export const uploadApi = {
     const result = await response.json();
     return result.data;
   },
+
+  // Upload setting image (hero, etc)
+  uploadSettingImage: async (file: File): Promise<UploadResult> => {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const response = await fetch('/api/v1/upload/settings', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken') || ''}`,
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Upload failed');
+    }
+
+    const result = await response.json();
+    return result.data;
+  },
 };
+

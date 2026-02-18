@@ -45,7 +45,7 @@ export const TiptapEditor = ({
       }),
       Link.configure({
         openOnClick: false,
-        HTMLAttributes: { class: 'text-blue-600 underline' },
+        HTMLAttributes: { class: 'text-primary underline font-medium' },
       }),
       Placeholder.configure({
         placeholder,
@@ -112,7 +112,7 @@ export const TiptapEditor = ({
         'p-2 rounded-md transition-colors',
         isActive
           ? 'bg-primary text-primary-foreground'
-          : 'hover:bg-gray-100 text-gray-700',
+          : 'hover:bg-accent text-muted-foreground hover:text-accent-foreground',
         disabled && 'opacity-50 cursor-not-allowed'
       )}
     >
@@ -121,9 +121,9 @@ export const TiptapEditor = ({
   );
 
   return (
-    <div className={cn('border rounded-lg overflow-hidden bg-white', className)}>
+    <div className={cn('border rounded-lg overflow-hidden bg-card text-foreground', className)}>
       {/* Toolbar */}
-      <div className="border-b p-2 flex flex-wrap gap-1 bg-gray-50">
+      <div className="border-b p-2 flex flex-wrap gap-1 bg-muted/50">
         {/* Text formatting */}
         <div className="flex gap-1">
           <ToolbarButton
@@ -142,7 +142,7 @@ export const TiptapEditor = ({
           </ToolbarButton>
         </div>
 
-        <div className="w-px h-8 bg-gray-300 mx-1" />
+        <div className="w-px h-8 bg-border mx-1" />
 
         {/* Headings */}
         <div className="flex gap-1">
@@ -162,7 +162,7 @@ export const TiptapEditor = ({
           </ToolbarButton>
         </div>
 
-        <div className="w-px h-8 bg-gray-300 mx-1" />
+        <div className="w-px h-8 bg-border mx-1" />
 
         {/* Lists */}
         <div className="flex gap-1">
@@ -182,7 +182,7 @@ export const TiptapEditor = ({
           </ToolbarButton>
         </div>
 
-        <div className="w-px h-8 bg-gray-300 mx-1" />
+        <div className="w-px h-8 bg-border mx-1" />
 
         {/* Other */}
         <div className="flex gap-1">
@@ -215,7 +215,7 @@ export const TiptapEditor = ({
               htmlFor="editor-image-upload"
               className={cn(
                 'p-2 rounded-md transition-colors cursor-pointer flex items-center',
-                'hover:bg-gray-100 text-gray-700',
+                'hover:bg-accent text-muted-foreground hover:text-accent-foreground',
                 isUploading && 'opacity-50 cursor-not-allowed'
               )}
               title="Upload Image"
@@ -229,7 +229,7 @@ export const TiptapEditor = ({
           </div>
         </div>
 
-        <div className="w-px h-8 bg-gray-300 mx-1" />
+        <div className="w-px h-8 bg-border mx-1" />
 
         {/* Undo/Redo */}
         <div className="flex gap-1">
@@ -253,7 +253,7 @@ export const TiptapEditor = ({
       {/* Editor Content */}
       <EditorContent
         editor={editor}
-        className="prose max-w-none p-4 min-h-[400px] focus:outline-none"
+        className="prose dark:prose-invert max-w-none p-4 min-h-[400px] focus:outline-none"
       />
     </div>
   );

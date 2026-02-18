@@ -1,18 +1,20 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth, useLogout } from '@/features/auth/hooks/useAuth';
 import { Button } from '@/components/ui/button';
-import { 
-  LayoutDashboard, 
-  FileText, 
-  Users, 
-  Settings, 
+import {
+  LayoutDashboard,
+  FileText,
+  Users,
+  Settings,
   LogOut,
   Menu,
   X,
   ChevronDown
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { cn } from '@/shared/lib/utils';
+import { ModeToggle } from '@/components/ModeToggle';
+import { useSetting } from '@/features/settings/hooks/useSettings';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,7 +41,31 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
   const logout = useLogout();
   const navigate = useNavigate();
   const location = useLocation();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const siteLogo = useSetting('site_logo');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
+
+  // Close sidebar on mobile when navigating
+  useEffect(() => {
+    if (window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    }
+  }, [location.pathname]);
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      // If we cross the 1024 breakpoint
+      if (window.innerWidth >= 1024) {
+        setIsSidebarOpen(true);
+      } else {
+        // Only set to false if it was previously open or on initial load
+        setIsSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -58,29 +84,45 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-background flex text-foreground relative overflow-x-hidden">
+      {/* Sidebar Backdrop (Mobile) */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm transition-opacity"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 bg-white border-r transition-all duration-300 lg:static',
-          isSidebarOpen ? 'w-64' : 'w-0 lg:w-20'
+          'fixed inset-y-0 left-0 z-50 bg-card border-r transition-all duration-300 lg:static',
+          isSidebarOpen ? 'w-64' : 'w-0 -translate-x-full lg:translate-x-0 lg:w-20',
+          !isSidebarOpen && 'invisible lg:visible'
         )}
       >
-        <div className="h-full flex flex-col">
+        <div className={cn(
+          "h-full flex flex-col transition-opacity duration-200",
+          !isSidebarOpen && "lg:w-20",
+          !isSidebarOpen && "opacity-0 lg:opacity-100"
+        )}>
           {/* Logo */}
           <div className="h-16 flex items-center justify-between px-4 border-b">
-            <Link 
-              to="/admin" 
+            <Link
+              to="/admin"
               className={cn(
-                'font-bold text-lg text-primary transition-opacity',
+                'flex items-center gap-2 font-bold text-lg text-primary transition-opacity',
                 !isSidebarOpen && 'lg:opacity-0'
               )}
             >
-              Admin Panel
+              {siteLogo && (
+                <img src={siteLogo} alt="Logo" className="h-8 w-8 object-contain" />
+              )}
+              <span className={cn(!isSidebarOpen && 'lg:hidden')}>Admin Panel</span>
             </Link>
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="lg:hidden p-2 rounded-md hover:bg-gray-100"
+              className="lg:hidden p-2 rounded-md hover:bg-accent text-muted-foreground"
             >
               <X className="w-5 h-5" />
             </button>
@@ -98,7 +140,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
                     'flex items-center gap-3 px-3 py-2 rounded-md transition-colors',
                     isActive(item.path)
                       ? 'bg-primary text-primary-foreground'
-                      : 'text-gray-700 hover:bg-gray-100',
+                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
                     !isSidebarOpen && 'lg:justify-center'
                   )}
                 >
@@ -114,24 +156,24 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className={cn(
-                  'flex items-center gap-3 w-full p-2 rounded-md hover:bg-gray-100 transition-colors',
+                  'flex items-center gap-3 w-full p-2 rounded-md hover:bg-accent transition-colors',
                   !isSidebarOpen && 'lg:justify-center'
                 )}>
                   <Avatar className="w-8 h-8 flex-shrink-0">
                     <AvatarImage src={user?.avatarUrl || undefined} />
-                    <AvatarFallback>{user?.name?.charAt(0) || 'A'}</AvatarFallback>
+                    <AvatarFallback className="bg-primary/10 text-primary">{user?.name?.charAt(0) || 'A'}</AvatarFallback>
                   </Avatar>
                   <div className={cn('text-left flex-1', !isSidebarOpen && 'lg:hidden')}>
                     <p className="text-sm font-medium truncate">{user?.name}</p>
                     <p className="text-xs text-muted-foreground capitalize">{user?.role?.toLowerCase()}</p>
                   </div>
-                  <ChevronDown className={cn('w-4 h-4 text-gray-400', !isSidebarOpen && 'lg:hidden')} />
+                  <ChevronDown className={cn('w-4 h-4 text-muted-foreground', !isSidebarOpen && 'lg:hidden')} />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>Akun Saya</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
                   <LogOut className="mr-2 h-4 w-4" />
                   Logout
                 </DropdownMenuItem>
@@ -144,20 +186,21 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <header className="h-16 bg-white border-b flex items-center justify-between px-4 lg:px-6">
+        <header className="h-16 bg-card border-b flex items-center justify-between px-4 lg:px-6">
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="p-2 rounded-md hover:bg-gray-100"
+            className="p-2 rounded-md hover:bg-accent text-muted-foreground"
           >
             <Menu className="w-5 h-5" />
           </button>
 
           <div className="flex items-center gap-4">
             <Link to="/" target="_blank">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="text-muted-foreground">
                 Lihat Website
               </Button>
             </Link>
+            <ModeToggle />
           </div>
         </header>
 
