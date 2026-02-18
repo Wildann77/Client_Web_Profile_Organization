@@ -4,12 +4,12 @@ import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
 import { useCallback, useState } from 'react';
-import { 
-  Bold, 
-  Italic, 
-  List, 
-  ListOrdered, 
-  Link as LinkIcon, 
+import {
+  Bold,
+  Italic,
+  List,
+  ListOrdered,
+  Link as LinkIcon,
   Image as ImageIcon,
   Heading1,
   Heading2,
@@ -28,11 +28,11 @@ interface TiptapEditorProps {
   className?: string;
 }
 
-export const TiptapEditor = ({ 
-  content, 
-  onChange, 
+export const TiptapEditor = ({
+  content,
+  onChange,
   placeholder = 'Mulai menulis artikel...',
-  className 
+  className
 }: TiptapEditorProps) => {
   const [isUploading, setIsUploading] = useState(false);
 
@@ -61,10 +61,14 @@ export const TiptapEditor = ({
   // Image Upload Handler
   const addImage = useCallback(async (file: File) => {
     if (!editor) return;
-    
+
     setIsUploading(true);
     try {
-      const result = await uploadApi.uploadImage(file);
+      // Compress image before upload
+      const { compressImage } = await import('@/shared/lib/imageCompression');
+      const compressedFile = await compressImage(file);
+
+      const result = await uploadApi.uploadImage(compressedFile);
       editor.chain().focus().setImage({ src: result.secureUrl }).run();
     } catch (error) {
       console.error('Upload failed:', error);
@@ -77,7 +81,7 @@ export const TiptapEditor = ({
   // Add link
   const addLink = useCallback(() => {
     if (!editor) return;
-    
+
     const url = window.prompt('Masukkan URL:');
     if (url) {
       editor.chain().focus().setLink({ href: url }).run();
@@ -86,15 +90,15 @@ export const TiptapEditor = ({
 
   if (!editor) return null;
 
-  const ToolbarButton = ({ 
-    onClick, 
-    isActive = false, 
+  const ToolbarButton = ({
+    onClick,
+    isActive = false,
     disabled = false,
     children,
     title
-  }: { 
-    onClick: () => void; 
-    isActive?: boolean; 
+  }: {
+    onClick: () => void;
+    isActive?: boolean;
     disabled?: boolean;
     children: React.ReactNode;
     title: string;
@@ -106,8 +110,8 @@ export const TiptapEditor = ({
       title={title}
       className={cn(
         'p-2 rounded-md transition-colors',
-        isActive 
-          ? 'bg-primary text-primary-foreground' 
+        isActive
+          ? 'bg-primary text-primary-foreground'
           : 'hover:bg-gray-100 text-gray-700',
         disabled && 'opacity-50 cursor-not-allowed'
       )}
@@ -196,7 +200,7 @@ export const TiptapEditor = ({
           >
             <LinkIcon className="w-4 h-4" />
           </ToolbarButton>
-          
+
           {/* Image Upload */}
           <div className="relative">
             <input
@@ -247,8 +251,8 @@ export const TiptapEditor = ({
       </div>
 
       {/* Editor Content */}
-      <EditorContent 
-        editor={editor} 
+      <EditorContent
+        editor={editor}
         className="prose max-w-none p-4 min-h-[400px] focus:outline-none"
       />
     </div>

@@ -7,24 +7,27 @@ export const useAuth = () => {
   const { user, isAuthenticated, isLoading, setUser, setAuthenticated, setLoading } = useAuthStore();
 
   // Query for current user
-  const { data, isLoading: isUserLoading, error } = useQuery({
+  const { data, isLoading: isUserLoading, isSuccess, isError } = useQuery({
     queryKey: ['auth', 'me'],
     queryFn: authApi.me,
     enabled: !!localStorage.getItem('accessToken'),
     retry: false,
   });
 
-  // Update store when data changes
+  // Update store when query finishes
   useEffect(() => {
-    setLoading(isUserLoading);
-    if (data) {
-      setUser(data);
-      setAuthenticated(true);
-    } else if (error) {
-      setUser(null);
-      setAuthenticated(false);
+    // Only update if we're not currently loading from the query's perspective
+    if (!isUserLoading) {
+      if (isSuccess && data) {
+        setUser(data);
+        setAuthenticated(true);
+      } else if (isError) {
+        setUser(null);
+        setAuthenticated(false);
+      }
+      setLoading(false);
     }
-  }, [data, isUserLoading, error, setUser, setAuthenticated, setLoading]);
+  }, [data, isUserLoading, isSuccess, isError, setUser, setAuthenticated, setLoading]);
 
   return {
     user,

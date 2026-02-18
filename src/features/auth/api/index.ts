@@ -1,4 +1,4 @@
-import { post } from '@/shared/lib/api';
+import { get, post } from '@/shared/lib/api';
 import type { User } from '@/shared/types';
 
 export interface LoginCredentials {
@@ -40,7 +40,7 @@ export const authApi = {
 
   // Get current user
   me: async (): Promise<User> => {
-    return post<User>('/auth/me', {});
+    return get<User>('/auth/me');
   },
 
   // Refresh token

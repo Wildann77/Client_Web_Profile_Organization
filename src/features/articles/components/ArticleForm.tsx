@@ -59,8 +59,8 @@ export const ArticleForm = ({ article, onSubmit, isSubmitting = false }: Article
       visibility: article?.visibility || 'PUBLIC',
       metaTitle: article?.metaTitle || '',
       metaDescription: article?.metaDescription || '',
-      publishedAt: article?.publishedAt 
-        ? new Date(article.publishedAt).toISOString().slice(0, 16) 
+      publishedAt: article?.publishedAt
+        ? new Date(article.publishedAt).toISOString().slice(0, 16)
         : '',
     },
   });
@@ -83,7 +83,11 @@ export const ArticleForm = ({ article, onSubmit, isSubmitting = false }: Article
 
     setIsUploading(true);
     try {
-      const result = await uploadThumbnail.mutateAsync(file);
+      // Compress image before upload
+      const { compressImage } = await import('@/shared/lib/imageCompression');
+      const compressedFile = await compressImage(file);
+
+      const result = await uploadThumbnail.mutateAsync(compressedFile);
       setValue('thumbnailUrl', result.secureUrl);
     } catch (error) {
       console.error('Upload failed:', error);

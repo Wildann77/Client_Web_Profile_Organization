@@ -48,7 +48,11 @@ api.interceptors.response.use(
 
           // Retry original request
           if (originalRequest.headers) {
-            originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+            if (typeof originalRequest.headers.set === 'function') {
+              originalRequest.headers.set('Authorization', `Bearer ${accessToken}`);
+            } else {
+              originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+            }
           }
           return api(originalRequest);
         }
