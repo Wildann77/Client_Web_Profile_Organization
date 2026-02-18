@@ -142,9 +142,7 @@ export const HomePage = () => {
           </div>
 
           {isLoading ? (
-            <div className="flex justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
+            <ArticleListSkeleton count={3} columns={3} />
           ) : (
             <ArticleList articles={data?.articles || []} columns={3} />
           )}
