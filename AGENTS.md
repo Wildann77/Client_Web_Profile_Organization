@@ -214,7 +214,33 @@ const form = useForm<ItemFormData>({
 
 ### Important Notes
 - This is a **client-side only** React app (not RSC)
-- Authentication uses JWT stored in localStorage + HttpOnly cookies
-- Proxy configured in `vite.config.ts` for `/api` to `localhost:3000`
+- Authentication uses JWT stored in localStorage + HttpOnly Refresh Token in cookies
+- Proxy configured in `vite.config.ts` for local development
 - Uses React 19 with StrictMode
 - All shadcn/ui components are in `@/components/ui` - don't modify, extend via wrapper components
+
+## Deployment (Vercel)
+
+### Strategy: Vercel Rewrites
+To solve CORS and Cookie issues without a custom domain, we use Vercel Rewrites. The frontend project handles the routing.
+
+1. **Backend Deployment**:
+   - Deploy as a separate project.
+   - Use `vercel.json` with `@vercel/node` builder.
+   - Entry point: `api/index.ts` (registers `module-alias` and `tsconfig-paths`).
+   - `package.json` must have `"postinstall": "prisma generate"`.
+
+2. **Frontend Deployment**:
+   - Deploy as a separate project.
+   - Use `vercel.json` to rewrite `/api/:path*` to the Vercel backend URL.
+   - Set SPA routing: rewrite all other paths to `/index.html`.
+
+### Environment Variables
+**Backend**:
+- `DATABASE_URL`: Neon PostgreSQL connection string.
+- `JWT_SECRET`: Secret key for token signing.
+- `FRONTEND_URL`: URL of the deployed frontend (for CORS).
+- `CLOUDINARY_*`: Credentials for image uploads.
+
+**Frontend**:
+- No `VITE_API_URL` needed in production if using rewrites (requests go to `/api/v1`).
