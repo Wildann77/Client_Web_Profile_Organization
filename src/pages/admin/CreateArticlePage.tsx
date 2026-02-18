@@ -11,8 +11,16 @@ export const CreateArticlePage = () => {
   const navigate = useNavigate();
   const createArticle = useCreateArticle();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (values: any) => {
     try {
+      // Convert local datetime-local string to ISO string for backend
+      const data = { ...values };
+      if (data.publishedAt) {
+        data.publishedAt = new Date(data.publishedAt).toISOString();
+      } else {
+        delete data.publishedAt;
+      }
+
       await createArticle.mutateAsync(data);
       toast.success('Artikel berhasil dibuat');
       navigate('/admin/artikel');
@@ -35,9 +43,9 @@ export const CreateArticlePage = () => {
         </div>
 
         {/* Form */}
-        <ArticleForm 
-          onSubmit={handleSubmit} 
-          isSubmitting={createArticle.isPending} 
+        <ArticleForm
+          onSubmit={handleSubmit}
+          isSubmitting={createArticle.isPending}
         />
       </div>
     </AdminLayout>

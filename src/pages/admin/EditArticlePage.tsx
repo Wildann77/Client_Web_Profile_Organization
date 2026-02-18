@@ -10,14 +10,23 @@ import { Link } from 'react-router-dom';
 export const EditArticlePage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  
+
   const { data: article, isLoading } = useAdminArticle(id || '');
   const updateArticle = useUpdateArticle();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (values: any) => {
     if (!id) return;
-    
+
     try {
+      // Convert local datetime-local string to ISO string for backend
+      const data = { ...values };
+      if (data.publishedAt) {
+        data.publishedAt = new Date(data.publishedAt).toISOString();
+      } else {
+        // If empty string, tell backend to set it to null
+        data.publishedAt = '';
+      }
+
       await updateArticle.mutateAsync({ id, data });
       toast.success('Artikel berhasil diperbarui');
       navigate('/admin/artikel');

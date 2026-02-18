@@ -45,7 +45,12 @@ export const ArticleForm = ({ article, onSubmit, isSubmitting = false }: Article
       metaTitle: article?.metaTitle || '',
       metaDescription: article?.metaDescription || '',
       publishedAt: article?.publishedAt
-        ? new Date(article.publishedAt).toISOString().slice(0, 16)
+        ? (() => {
+          const date = new Date(article.publishedAt);
+          return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+            .toISOString()
+            .slice(0, 16);
+        })()
         : '',
     },
   });
