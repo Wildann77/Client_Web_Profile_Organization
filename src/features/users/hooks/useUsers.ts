@@ -1,7 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { usersApi } from '../api';
 import type { UserFilters, CreateUserInput, UpdateUserInput } from '../api';
-import { toast } from 'sonner';
+import { createMutationErrorHandler } from '@/shared/lib/errorHandler';
 
 export const USER_QUERY_KEY = ['admin', 'users'];
 
@@ -21,9 +22,10 @@ export const useCreateUser = () => {
             queryClient.invalidateQueries({ queryKey: USER_QUERY_KEY });
             toast.success('Pengguna berhasil ditambahkan');
         },
-        onError: (error: any) => {
-            toast.error(error.message || 'Gagal menambahkan pengguna');
-        },
+        onError: createMutationErrorHandler({
+            fallbackMessage: 'Gagal menambahkan pengguna',
+            context: 'useCreateUser',
+        }),
     });
 };
 
@@ -37,9 +39,10 @@ export const useUpdateUser = () => {
             queryClient.invalidateQueries({ queryKey: USER_QUERY_KEY });
             toast.success('Pengguna berhasil diperbarui');
         },
-        onError: (error: any) => {
-            toast.error(error.message || 'Gagal memperbarui pengguna');
-        },
+        onError: createMutationErrorHandler({
+            fallbackMessage: 'Gagal memperbarui pengguna',
+            context: 'useUpdateUser',
+        }),
     });
 };
 
@@ -53,9 +56,10 @@ export const useToggleUserStatus = () => {
             queryClient.invalidateQueries({ queryKey: USER_QUERY_KEY });
             toast.success('Status pengguna diperbarui');
         },
-        onError: (error: any) => {
-            toast.error(error.message || 'Gagal mengubah status pengguna');
-        },
+        onError: createMutationErrorHandler({
+            fallbackMessage: 'Gagal mengubah status pengguna',
+            context: 'useToggleUserStatus',
+        }),
     });
 };
 
@@ -68,8 +72,9 @@ export const useDeleteUser = () => {
             queryClient.invalidateQueries({ queryKey: USER_QUERY_KEY });
             toast.success('Pengguna berhasil dihapus');
         },
-        onError: (error: any) => {
-            toast.error(error.message || 'Gagal menghapus pengguna');
-        },
+        onError: createMutationErrorHandler({
+            fallbackMessage: 'Gagal menghapus pengguna',
+            context: 'useDeleteUser',
+        }),
     });
 };

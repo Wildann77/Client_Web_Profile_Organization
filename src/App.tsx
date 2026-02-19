@@ -22,6 +22,7 @@ import { AdminUsersPage } from './pages/admin/AdminUsersPage';
 // Components
 import { ProtectedRoute } from './features/auth/components/ProtectedRoute';
 import { ScrollToTop } from './components/ScrollToTop';
+import { DynamicMetadata } from './components/DynamicMetadata';
 import { Loader2 } from 'lucide-react';
 
 // Layouts
@@ -41,6 +42,7 @@ function App() {
   return (
     <>
       <ScrollToTop />
+      <DynamicMetadata />
       <Routes>
         {/* Public Routes */}
         <Route element={<PublicLayout />}>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAdminArticles, useDeleteArticle } from '@/features/articles/hooks/useArticles';
+import { handleError } from '@/shared/lib/errorHandler';
 import { AdminLayout } from '@/features/admin/components/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -60,8 +61,11 @@ export const AdminArticlesPage = () => {
       await deleteArticle.mutateAsync(deleteId);
       toast.success('Artikel berhasil dihapus');
       setDeleteId(null);
-    } catch (error) {
-      toast.error('Gagal menghapus artikel');
+    } catch (err) {
+      handleError(err, {
+        fallbackMessage: 'Gagal menghapus artikel',
+        context: 'AdminArticlesPage',
+      });
     }
   };
 

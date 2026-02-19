@@ -1,8 +1,12 @@
+import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { LoginForm } from '@/features/auth/components/LoginForm';
 import { useAuth } from '@/features/auth/hooks/useAuth';
-import { useEffect } from 'react';
 import { useSetting } from '@/features/settings/hooks/useSettings';
+
+interface LocationState {
+  from?: { pathname: string };
+}
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -14,13 +18,15 @@ export const LoginPage = () => {
   // Redirect if already logged in
   useEffect(() => {
     if (isAuthenticated) {
-      const from = (location.state as any)?.from?.pathname || '/admin';
+      const state = location.state as LocationState;
+      const from = state?.from?.pathname ?? '/admin';
       navigate(from, { replace: true });
     }
   }, [isAuthenticated, navigate, location]);
 
   const handleSuccess = () => {
-    const from = (location.state as any)?.from?.pathname || '/admin';
+    const state = location.state as LocationState;
+    const from = state?.from?.pathname ?? '/admin';
     navigate(from, { replace: true });
   };
 

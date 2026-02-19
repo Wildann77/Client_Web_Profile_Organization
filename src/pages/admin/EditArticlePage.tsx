@@ -1,12 +1,13 @@
 import { useNavigate, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAdminArticle, useUpdateArticle } from '@/features/articles/hooks/useArticles';
 import { ArticleForm } from '@/features/articles/components/ArticleForm';
 import { type ArticleFormData } from '@/features/articles/schemas/articleSchema';
+import { handleError } from '@/shared/lib/errorHandler';
 import { AdminLayout } from '@/features/admin/components/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { Link } from 'react-router-dom';
 
 export const EditArticlePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -32,8 +33,10 @@ export const EditArticlePage = () => {
       toast.success('Artikel berhasil diperbarui');
       navigate('/admin/artikel');
     } catch (error) {
-      const err = error as { response?: { data?: { message?: string } } };
-      toast.error(err.response?.data?.message || 'Gagal memperbarui artikel');
+      handleError(error, {
+        fallbackMessage: 'Gagal memperbarui artikel',
+        context: 'EditArticlePage',
+      });
     }
   };
 

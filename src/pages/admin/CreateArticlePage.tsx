@@ -1,12 +1,13 @@
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useCreateArticle } from '@/features/articles/hooks/useArticles';
 import { ArticleForm } from '@/features/articles/components/ArticleForm';
 import { type ArticleFormData } from '@/features/articles/schemas/articleSchema';
+import { handleError } from '@/shared/lib/errorHandler';
 import { AdminLayout } from '@/features/admin/components/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
-import { Link } from 'react-router-dom';
 
 export const CreateArticlePage = () => {
   const navigate = useNavigate();
@@ -26,8 +27,10 @@ export const CreateArticlePage = () => {
       toast.success('Artikel berhasil dibuat');
       navigate('/admin/artikel');
     } catch (error) {
-      const err = error as { response?: { data?: { message?: string } } };
-      toast.error(err.response?.data?.message || 'Gagal membuat artikel');
+      handleError(error, {
+        fallbackMessage: 'Gagal membuat artikel',
+        context: 'CreateArticlePage',
+      });
     }
   };
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLogin } from '../hooks/useAuth';
+import { handleFormError } from '@/shared/lib/errorHandler';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -31,8 +32,12 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
     try {
       await login.mutateAsync(data);
       onSuccess?.();
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Login gagal. Silakan coba lagi.');
+    } catch (err) {
+      const message = handleFormError(err, {
+        fallbackMessage: 'Login gagal. Silakan coba lagi.',
+        context: 'LoginForm',
+      });
+      setError(message);
     }
   };
 
