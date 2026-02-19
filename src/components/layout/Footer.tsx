@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Facebook, Instagram, Youtube, Mail, Phone, MapPin } from 'lucide-react';
 import { useSetting, usePublicSettings } from '@/features/settings/hooks/useSettings';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export function Footer() {
     const { isLoading: isSettingsLoading } = usePublicSettings();
@@ -13,8 +14,8 @@ export function Footer() {
     const socialInstagram = useSetting('social_instagram');
     const socialYoutube = useSetting('social_youtube');
 
-    const displayName = !isSettingsLoading ? siteName : '';
-    const displayDesc = !isSettingsLoading ? siteDescription : '';
+    const displayName = siteName;
+    const displayDesc = siteDescription;
 
     return (
         <footer className="bg-gradient-to-br from-primary/5 to-primary/10 border-t py-12 mt-auto">
@@ -22,10 +23,19 @@ export function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {/* Kolom 1 — Identitas */}
                     <div>
-                        <h3 className="font-bold text-lg mb-4">{displayName}</h3>
-                        <p className="text-muted-foreground text-sm leading-relaxed">
-                            {displayDesc}
-                        </p>
+                        <h3 className="font-bold text-lg mb-4">
+                            {isSettingsLoading ? <Skeleton className="h-6 w-32" /> : <span className="animate-in fade-in duration-700">{displayName}</span>}
+                        </h3>
+                        <div className="text-muted-foreground text-sm leading-relaxed space-y-2">
+                            {isSettingsLoading ? (
+                                <>
+                                    <Skeleton className="h-4 w-full" />
+                                    <Skeleton className="h-4 w-5/6" />
+                                </>
+                            ) : (
+                                <p className="animate-in fade-in duration-700">{displayDesc}</p>
+                            )}
+                        </div>
 
                         {/* Sosial Media */}
                         {(socialFacebook || socialInstagram || socialYoutube) && (

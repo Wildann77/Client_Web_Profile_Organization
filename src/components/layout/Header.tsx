@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ChevronDown, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ModeToggle } from '@/components/ModeToggle';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -41,11 +42,19 @@ export function Header() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     <Link to="/" className="flex items-center gap-2">
-                        {siteLogo && (
-                            <img src={siteLogo} alt={siteName || 'Logo'} className="h-8 w-8 object-contain" />
+                        {isSettingsLoading ? (
+                            <Skeleton className="h-8 w-8 rounded-full" />
+                        ) : (
+                            siteLogo && (
+                                <img src={siteLogo} alt={siteName || 'Logo'} className="h-8 w-8 object-contain animate-in fade-in duration-700" />
+                            )
                         )}
-                        <span className="font-bold text-lg md:text-xl truncate max-w-[150px] sm:max-w-none">
-                            {!isSettingsLoading && siteName}
+                        <span className="font-bold text-lg md:text-xl truncate max-w-[150px] sm:max-w-none min-w-[100px]">
+                            {isSettingsLoading ? (
+                                <Skeleton className="h-6 w-32" />
+                            ) : (
+                                <span className="animate-in fade-in slide-in-from-left-2 duration-700">{siteName}</span>
+                            )}
                         </span>
                     </Link>
 
@@ -89,10 +98,19 @@ export function Header() {
                             <SheetContent side="right" className="p-0 flex flex-col">
                                 <SheetHeader className="px-6 py-4 border-b text-left">
                                     <SheetTitle className="flex items-center gap-2 truncate">
-                                        {siteLogo && (
-                                            <img src={siteLogo} alt={siteName || 'Logo'} className="h-6 w-6 object-contain" />
+                                        {isSettingsLoading ? (
+                                            <>
+                                                <Skeleton className="h-6 w-6 rounded-full" />
+                                                <Skeleton className="h-5 w-24" />
+                                            </>
+                                        ) : (
+                                            <>
+                                                {siteLogo && (
+                                                    <img src={siteLogo} alt={siteName || 'Logo'} className="h-6 w-6 object-contain" />
+                                                )}
+                                                <span className="truncate">{siteName}</span>
+                                            </>
                                         )}
-                                        <span className="truncate">{!isSettingsLoading && siteName}</span>
                                     </SheetTitle>
                                 </SheetHeader>
                                 <div className="flex-1 flex flex-col py-6">

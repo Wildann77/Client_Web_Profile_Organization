@@ -2,6 +2,7 @@ import { Calendar, History, Building2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useSetting, usePublicSettings } from '@/features/settings/hooks/useSettings';
+import { Skeleton } from '@/components/ui/skeleton';
 
 // Render teks multi-paragraf (pisah berdasarkan \n\n)
 function MultiParagraph({ text }: { text: string }) {
@@ -50,7 +51,17 @@ export function HistoryPage() {
                     </div>
                     <Card className="border-l-4 border-l-primary shadow-sm hover:shadow-md transition-shadow">
                         <CardContent className="pt-6 text-muted-foreground leading-relaxed">
-                            {!isSettingsLoading && <MultiParagraph text={founding} />}
+                            {isSettingsLoading ? (
+                                <div className="space-y-2">
+                                    <Skeleton className="h-4 w-full" />
+                                    <Skeleton className="h-4 w-full" />
+                                    <Skeleton className="h-4 w-3/4" />
+                                </div>
+                            ) : (
+                                <div className="animate-in fade-in duration-700">
+                                    <MultiParagraph text={founding} />
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
                 </section>
@@ -67,7 +78,16 @@ export function HistoryPage() {
                     </div>
                     <Card className="border-l-4 border-l-primary shadow-sm hover:shadow-md transition-shadow">
                         <CardContent className="pt-6 text-muted-foreground leading-relaxed">
-                            {!isSettingsLoading && <MultiParagraph text={development} />}
+                            {isSettingsLoading ? (
+                                <div className="space-y-2">
+                                    <Skeleton className="h-4 w-full" />
+                                    <Skeleton className="h-4 w-5/6" />
+                                </div>
+                            ) : (
+                                <div className="animate-in fade-in duration-700">
+                                    <MultiParagraph text={development} />
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
                 </section>
@@ -82,7 +102,17 @@ export function HistoryPage() {
                     </div>
                     <Card className="border-l-4 border-l-primary shadow-sm hover:shadow-md transition-shadow bg-primary/5">
                         <CardContent className="pt-6 text-muted-foreground leading-relaxed">
-                            {!isSettingsLoading && <MultiParagraph text={present} />}
+                            {isSettingsLoading ? (
+                                <div className="space-y-2">
+                                    <Skeleton className="h-4 w-full" />
+                                    <Skeleton className="h-4 w-full" />
+                                    <Skeleton className="h-4 w-3/4" />
+                                </div>
+                            ) : (
+                                <div className="animate-in fade-in duration-700">
+                                    <MultiParagraph text={present} />
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
                 </section>
