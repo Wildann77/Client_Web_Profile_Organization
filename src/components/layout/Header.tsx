@@ -15,10 +15,11 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/components/ui/sheet';
-import { useSetting } from '@/features/settings/hooks/useSettings';
+import { useSetting, usePublicSettings } from '@/features/settings/hooks/useSettings';
 import { useState } from 'react';
 
 export function Header() {
+    const { isLoading: isSettingsLoading } = usePublicSettings();
     const siteName = useSetting('site_name');
     const siteLogo = useSetting('site_logo');
     const [isOpen, setIsOpen] = useState(false);
@@ -44,7 +45,7 @@ export function Header() {
                             <img src={siteLogo} alt={siteName || 'Logo'} className="h-8 w-8 object-contain" />
                         )}
                         <span className="font-bold text-lg md:text-xl truncate max-w-[150px] sm:max-w-none">
-                            {siteName || 'Organisasi Kami'}
+                            {!isSettingsLoading && siteName}
                         </span>
                     </Link>
 
@@ -91,7 +92,7 @@ export function Header() {
                                         {siteLogo && (
                                             <img src={siteLogo} alt={siteName || 'Logo'} className="h-6 w-6 object-contain" />
                                         )}
-                                        <span className="truncate">{siteName || 'Menu'}</span>
+                                        <span className="truncate">{!isSettingsLoading && siteName}</span>
                                     </SheetTitle>
                                 </SheetHeader>
                                 <div className="flex-1 flex flex-col py-6">
