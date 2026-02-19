@@ -1,12 +1,13 @@
 import { MapPin, Phone, Mail, Clock, MessageCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useSetting } from '@/features/settings/hooks/useSettings';
+import { useSetting, usePublicSettings } from '@/features/settings/hooks/useSettings';
 
 const DEFAULT_MAPS_URL =
     'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15812.213256093815!2d110.36098065541992!3d-7.784131500000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a5828f7d9830d%3A0x6b4458514197e59c!2sGedung%20Pimpinan%20Pusat%20Muhammadiyah!5e0!3m2!1sid!2sid!4v1708244555000!5m2!1sid!2sid';
 
 export function LocationPage() {
+    const { isLoading: isSettingsLoading } = usePublicSettings();
     const address = useSetting('contact_address');
     const phone = useSetting('contact_phone');
     const whatsapp = useSetting('contact_whatsapp');
@@ -130,19 +131,19 @@ export function LocationPage() {
                             <div className="flex justify-between">
                                 <span>Senin - Jumat:</span>
                                 <span className="font-medium text-foreground">
-                                    {hoursWeekday || '08.00 - 16.00'}
+                                    {!isSettingsLoading && hoursWeekday}
                                 </span>
                             </div>
                             <div className="flex justify-between">
                                 <span>Sabtu:</span>
                                 <span className="font-medium text-foreground">
-                                    {hoursSaturday || 'Libur'}
+                                    {!isSettingsLoading && hoursSaturday}
                                 </span>
                             </div>
                             <div className="flex justify-between">
                                 <span>Minggu:</span>
                                 <span className="font-medium text-foreground">
-                                    {hoursSunday || 'Tutup'}
+                                    {!isSettingsLoading && hoursSunday}
                                 </span>
                             </div>
                         </CardContent>

@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, Target, History, Users, MapPin, Newspaper, Loader2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
-import { useSetting } from '@/features/settings/hooks/useSettings';
+import { useSetting, usePublicSettings } from '@/features/settings/hooks/useSettings';
 
 const profileLinks = [
   {
@@ -38,11 +38,14 @@ const profileLinks = [
 ];
 
 export const HomePage = () => {
-  const { data, isLoading } = usePublicArticles({ limit: 6 });
+  const { data: articleData, isLoading: isArticlesLoading } = usePublicArticles({ limit: 6 });
+  const { isLoading: isSettingsLoading } = usePublicSettings();
   const siteName = useSetting('site_name');
   const heroImageUrl = useSetting('hero_image_url');
   const heroSubtitle = useSetting('hero_subtitle');
   const [heroLoading, setHeroLoading] = useState(true);
+
+  const isPageLoading = isArticlesLoading || isSettingsLoading;
 
   return (
     <div className="space-y-0">
@@ -95,12 +98,12 @@ export const HomePage = () => {
           <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6 drop-shadow-lg text-white">
             Selamat Datang di{' '}
             <span className="text-white dark:text-blue-400 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-colors duration-300">
-              {siteName || 'Muhammadiyah'}
+              {!isSettingsLoading && siteName}
             </span>
           </h1>
 
           <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-10 leading-relaxed font-sans">
-            {heroSubtitle || "Bersama membangun masyarakat Islam yang sebenar-benarnya — melalui dakwah, pendidikan, dan amal sosial."}
+            {!isSettingsLoading && heroSubtitle}
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center">
@@ -171,10 +174,10 @@ export const HomePage = () => {
             </Link>
           </div>
 
-          {isLoading ? (
+          {isPageLoading ? (
             <ArticleListSkeleton count={3} columns={3} />
           ) : (
-            <ArticleList articles={data?.articles || []} columns={3} />
+            <ArticleList articles={articleData?.articles || []} columns={3} />
           )}
         </div>
       </section>
