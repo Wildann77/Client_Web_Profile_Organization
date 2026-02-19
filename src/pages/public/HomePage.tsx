@@ -48,23 +48,21 @@ export const HomePage = () => {
     <div className="space-y-0">
       {/* ── Hero Section ── */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-        {/* Base Background (Solid while loading) */}
-        <div className="absolute inset-0 bg-slate-950" />
+        {/* Base Background (Natural Gradient while loading) */}
+        <div className="absolute inset-0 bg-slate-50 dark:bg-slate-950" />
+        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_50%_50%,var(--color-primary)_0%,transparent_50%)] animate-pulse" />
 
-        {/* Shimmer/Loading Indicator */}
+        {/* Loading Indicator */}
         {heroLoading && (
-          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-950">
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center backdrop-blur-[2px]">
             <div className="relative">
-              {/* Pulsating Ring */}
-              <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping scale-150" />
-              {/* Icon/Logo Placeholder */}
-              <div className="relative bg-primary/10 p-4 rounded-full border border-primary/20 backdrop-blur-sm">
-                <Loader2 className="w-10 h-10 text-primary animate-spin" />
+              {/* Soft Pulsating Glow */}
+              <div className="absolute inset-0 rounded-full bg-primary/10 animate-ping scale-125" />
+              {/* Minimal Spinner */}
+              <div className="relative bg-white/10 p-3 rounded-full border border-white/20 backdrop-blur-md">
+                <Loader2 className="w-8 h-8 text-white animate-spin opacity-80" />
               </div>
             </div>
-            <p className="mt-4 text-slate-400 text-sm font-medium animate-pulse tracking-widest uppercase">
-              Memuat Gambar...
-            </p>
           </div>
         )}
 
@@ -73,7 +71,7 @@ export const HomePage = () => {
           <img
             src={heroImageUrl}
             alt={`${siteName || 'Muhammadiyah'} hero cover`}
-            className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-in-out ${heroLoading ? 'opacity-0 scale-110 blur-sm' : 'opacity-100 scale-100 blur-0'
+            className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-in-out ${heroLoading ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
               }`}
             onLoad={() => setHeroLoading(false)}
             onError={() => setHeroLoading(false)}
