@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, Target, History, Users, MapPin, Newspaper } from 'lucide-react';
 
 import { useSetting } from '@/features/settings/hooks/useSettings';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Spinner } from '@/components/ui/spinner';
 import { useState } from 'react';
 
 const profileLinks = [
@@ -50,12 +50,19 @@ export const HomePage = () => {
       {/* ── Hero Section ── */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
         {/* Cover image */}
-        {!imageLoaded && <Skeleton className="absolute inset-0 w-full h-full rounded-none" />}
+        {!imageLoaded && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-background">
+            <div className="flex flex-col items-center gap-2">
+              <Spinner className="w-8 h-8 text-primary" />
+              <p className="text-sm text-muted-foreground animate-pulse">Memuat Gambar...</p>
+            </div>
+          </div>
+        )}
         <img
           src={heroImageUrl}
           alt={`${siteName || 'Muhammadiyah'} hero cover`}
           className={cn(
-            "absolute inset-0 w-full h-full object-cover transition-opacity duration-700",
+            "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
             imageLoaded ? "opacity-100" : "opacity-0"
           )}
           onLoad={() => setImageLoaded(true)}
@@ -64,7 +71,10 @@ export const HomePage = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
 
         {/* Content */}
-        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+        <div className={cn(
+          "relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white transition-all duration-1000 transform",
+          imageLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+        )}>
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-sm font-medium mb-6">
             <Newspaper className="w-4 h-4" />
