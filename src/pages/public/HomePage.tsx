@@ -48,20 +48,23 @@ export const HomePage = () => {
     <div className="space-y-0">
       {/* ── Hero Section ── */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-        {/* Base Background (Natural Gradient while loading) */}
-        <div className="absolute inset-0 bg-slate-50 dark:bg-slate-950" />
-        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_50%_50%,var(--color-primary)_0%,transparent_50%)] animate-pulse" />
+        {/* Base Background (Warm & Natural Mesh) */}
+        <div className="absolute inset-0 bg-stone-100 dark:bg-zinc-950" />
+        {heroLoading && (
+          <>
+            <div className="absolute inset-0 opacity-30 bg-[radial-gradient(at_0%_0%,var(--color-primary),transparent_50%),radial-gradient(at_100%_100%,var(--color-primary),transparent_50%)] animate-pulse" />
+            <div className="absolute inset-0 opacity-20 bg-[translate-x-full] bg-gradient-to-r from-transparent via-white to-transparent animate-[shimmer_2s_infinite]" style={{ backgroundSize: '200% 100%' }} />
+          </>
+        )}
 
         {/* Loading Indicator */}
         {heroLoading && (
-          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center backdrop-blur-[2px]">
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center">
             <div className="relative">
-              {/* Soft Pulsating Glow */}
-              <div className="absolute inset-0 rounded-full bg-primary/10 animate-ping scale-125" />
-              {/* Minimal Spinner */}
-              <div className="relative bg-white/10 p-3 rounded-full border border-white/20 backdrop-blur-md">
-                <Loader2 className="w-8 h-8 text-white animate-spin opacity-80" />
-              </div>
+              {/* Ultra-soft Pulsating Glow */}
+              <div className="absolute inset-0 rounded-full bg-primary/5 animate-ping scale-150" />
+              {/* Minimalist Spinner */}
+              <Loader2 className="w-8 h-8 text-primary/40 animate-spin" />
             </div>
           </div>
         )}
@@ -71,14 +74,15 @@ export const HomePage = () => {
           <img
             src={heroImageUrl}
             alt={`${siteName || 'Muhammadiyah'} hero cover`}
-            className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-in-out ${heroLoading ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
+            className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-in-out ${heroLoading ? 'opacity-0 scale-100 blur-md' : 'opacity-100 scale-100 blur-0'
               }`}
             onLoad={() => setHeroLoading(false)}
             onError={() => setHeroLoading(false)}
           />
         )}
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
+        {/* Dark overlay - only fully visible when image is loaded */}
+        <div className={`absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70 transition-opacity duration-1000 ${heroLoading ? 'opacity-0' : 'opacity-100'
+          }`} />
 
         {/* Content */}
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
