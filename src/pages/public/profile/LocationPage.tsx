@@ -14,6 +14,7 @@ export function LocationPage() {
     const mapsUrl = useSetting('contact_maps_url');
     const hoursWeekday = useSetting('office_hours_weekday');
     const hoursSaturday = useSetting('office_hours_saturday');
+    const hoursSunday = useSetting('office_hours_sunday');
 
     const embedUrl = mapsUrl || DEFAULT_MAPS_URL;
 
@@ -135,12 +136,14 @@ export function LocationPage() {
                             <div className="flex justify-between">
                                 <span>Sabtu:</span>
                                 <span className="font-medium text-foreground">
-                                    {hoursSaturday || '08.00 - 12.00'}
+                                    {hoursSaturday || 'Libur'}
                                 </span>
                             </div>
-                            <div className="flex justify-between text-destructive">
+                            <div className="flex justify-between">
                                 <span>Minggu:</span>
-                                <span className="font-medium">Tutup</span>
+                                <span className="font-medium text-foreground">
+                                    {hoursSunday || 'Tutup'}
+                                </span>
                             </div>
                         </CardContent>
                     </Card>

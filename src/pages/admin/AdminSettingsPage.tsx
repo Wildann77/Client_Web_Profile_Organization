@@ -79,7 +79,8 @@ const SETTING_GROUPS: SettingGroup[] = [
         description: 'Jam buka kantor yang ditampilkan di halaman lokasi.',
         keys: [
             { key: 'office_hours_weekday', label: 'Senin - Jumat', placeholder: '08.00 - 16.00' },
-            { key: 'office_hours_saturday', label: 'Sabtu', placeholder: '08.00 - 12.00' },
+            { key: 'office_hours_saturday', label: 'Sabtu', placeholder: 'Libur' },
+            { key: 'office_hours_sunday', label: 'Minggu', placeholder: 'Tutup' },
         ],
     },
     {
