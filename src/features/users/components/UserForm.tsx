@@ -37,9 +37,12 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+// Export type untuk digunakan di komponen lain
+export type UserFormData = FormValues;
+
 interface UserFormProps {
     user?: User;
-    onSubmit: (data: any) => void;
+    onSubmit: (data: UserFormData) => void;
     isLoading: boolean;
 }
 

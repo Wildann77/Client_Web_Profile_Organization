@@ -46,8 +46,8 @@ import {
     useToggleUserStatus,
     useDeleteUser
 } from '@/features/users/hooks/useUsers';
-import type { User } from '@/features/users/api';
-import { UserForm } from '@/features/users/components/UserForm';
+import type { User, CreateUserInput, UpdateUserInput } from '@/features/users/api';
+import { UserForm, type UserFormData } from '@/features/users/components/UserForm';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 
@@ -63,16 +63,35 @@ export const AdminUsersPage = () => {
     const toggleStatus = useToggleUserStatus();
     const deleteUser = useDeleteUser();
 
-    const handleCreateSubmit = (data: any) => {
-        createUser.mutate(data, {
+    const handleCreateSubmit = (data: UserFormData) => {
+        // Pastikan password ada untuk create user
+        if (!data.password) {
+            return;
+        }
+        const createData: CreateUserInput = {
+            name: data.name,
+            email: data.email,
+            role: data.role,
+            password: data.password,
+        };
+        createUser.mutate(createData, {
             onSuccess: () => setIsAddOpen(false),
         });
     };
 
-    const handleUpdateSubmit = (data: any) => {
+    const handleUpdateSubmit = (data: UserFormData) => {
         if (editingUser) {
+            const updateData: UpdateUserInput = {
+                name: data.name,
+                email: data.email,
+                role: data.role,
+            };
+            // Hanya sertakan password jika diisi
+            if (data.password) {
+                updateData.password = data.password;
+            }
             updateUser.mutate(
-                { id: editingUser.id, data },
+                { id: editingUser.id, data: updateData },
                 { onSuccess: () => setEditingUser(null) }
             );
         }

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useCreateArticle } from '@/features/articles/hooks/useArticles';
 import { ArticleForm } from '@/features/articles/components/ArticleForm';
+import { type ArticleFormData } from '@/features/articles/schemas/articleSchema';
 import { AdminLayout } from '@/features/admin/components/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
@@ -11,7 +12,7 @@ export const CreateArticlePage = () => {
   const navigate = useNavigate();
   const createArticle = useCreateArticle();
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: ArticleFormData) => {
     try {
       // Convert local datetime-local string to ISO string for backend
       const data = { ...values };
@@ -24,8 +25,9 @@ export const CreateArticlePage = () => {
       await createArticle.mutateAsync(data);
       toast.success('Artikel berhasil dibuat');
       navigate('/admin/artikel');
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Gagal membuat artikel');
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || 'Gagal membuat artikel');
     }
   };
 

@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAdminArticle, useUpdateArticle } from '@/features/articles/hooks/useArticles';
 import { ArticleForm } from '@/features/articles/components/ArticleForm';
+import { type ArticleFormData } from '@/features/articles/schemas/articleSchema';
 import { AdminLayout } from '@/features/admin/components/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Loader2 } from 'lucide-react';
@@ -14,7 +15,7 @@ export const EditArticlePage = () => {
   const { data: article, isLoading } = useAdminArticle(id || '');
   const updateArticle = useUpdateArticle();
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: ArticleFormData) => {
     if (!id) return;
 
     try {
@@ -30,8 +31,9 @@ export const EditArticlePage = () => {
       await updateArticle.mutateAsync({ id, data });
       toast.success('Artikel berhasil diperbarui');
       navigate('/admin/artikel');
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Gagal memperbarui artikel');
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || 'Gagal memperbarui artikel');
     }
   };
 
