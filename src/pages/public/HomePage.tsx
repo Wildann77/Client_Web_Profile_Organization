@@ -47,7 +47,7 @@ export const HomePage = () => {
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
         {/* Cover image */}
         <img
-          src={heroImageUrl || "/hero-cover.png"}
+          src={heroImageUrl}
           alt={`${siteName || 'Muhammadiyah'} hero cover`}
           className="absolute inset-0 w-full h-full object-cover"
         />
