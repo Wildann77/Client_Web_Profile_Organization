@@ -5,7 +5,7 @@ import { ArticleList } from '@/features/articles/components/ArticleList';
 import { ArticleListSkeleton } from '@/features/articles/components/ArticleListSkeleton';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowRight, Target, History, Users, MapPin, Newspaper } from 'lucide-react';
+import { ArrowRight, Target, History, Users, MapPin, Newspaper, Loader2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import { useSetting } from '@/features/settings/hooks/useSettings';
@@ -48,15 +48,32 @@ export const HomePage = () => {
     <div className="space-y-0">
       {/* ── Hero Section ── */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-        {/* Cover image with Loading Skeleton */}
-        {heroImageUrl && heroLoading && (
-          <Skeleton className="absolute inset-0 w-full h-full bg-muted/20" />
+        {/* Base Background (Solid while loading) */}
+        <div className="absolute inset-0 bg-slate-950" />
+
+        {/* Shimmer/Loading Indicator */}
+        {heroLoading && (
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-950">
+            <div className="relative">
+              {/* Pulsating Ring */}
+              <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping scale-150" />
+              {/* Icon/Logo Placeholder */}
+              <div className="relative bg-primary/10 p-4 rounded-full border border-primary/20 backdrop-blur-sm">
+                <Loader2 className="w-10 h-10 text-primary animate-spin" />
+              </div>
+            </div>
+            <p className="mt-4 text-slate-400 text-sm font-medium animate-pulse tracking-widest uppercase">
+              Memuat Gambar...
+            </p>
+          </div>
         )}
+
+        {/* Cover image */}
         {heroImageUrl && (
           <img
             src={heroImageUrl}
             alt={`${siteName || 'Muhammadiyah'} hero cover`}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${heroLoading ? 'opacity-0' : 'opacity-100'
+            className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-in-out ${heroLoading ? 'opacity-0 scale-110 blur-sm' : 'opacity-100 scale-100 blur-0'
               }`}
             onLoad={() => setHeroLoading(false)}
             onError={() => setHeroLoading(false)}
