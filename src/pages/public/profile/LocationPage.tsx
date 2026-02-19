@@ -2,6 +2,7 @@ import { MapPin, Phone, Mail, Clock, MessageCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useSetting, usePublicSettings } from '@/features/settings/hooks/useSettings';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const DEFAULT_MAPS_URL =
     'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15812.213256093815!2d110.36098065541992!3d-7.784131500000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a5828f7d9830d%3A0x6b4458514197e59c!2sGedung%20Pimpinan%20Pusat%20Muhammadiyah!5e0!3m2!1sid!2sid!4v1708244555000!5m2!1sid!2sid';
@@ -100,7 +101,7 @@ export function LocationPage() {
                     )}
 
                     {/* Email */}
-                    {email && (
+                    {(email || isSettingsLoading) && (
                         <Card className="shadow-md">
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
@@ -109,12 +110,18 @@ export function LocationPage() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="text-muted-foreground">
-                                <a
-                                    href={`mailto:${email}`}
-                                    className="font-medium text-foreground hover:text-primary transition-colors break-all"
-                                >
-                                    {email}
-                                </a>
+                                {isSettingsLoading ? (
+                                    <Skeleton className="h-4 w-full" />
+                                ) : email ? (
+                                    <a
+                                        href={`mailto:${email}`}
+                                        className="font-medium text-foreground hover:text-primary transition-colors break-all animate-in fade-in duration-700"
+                                    >
+                                        {email}
+                                    </a>
+                                ) : (
+                                    <p className="italic text-muted-foreground/60 text-sm">Belum dikonfigurasi</p>
+                                )}
                             </CardContent>
                         </Card>
                     )}
@@ -128,22 +135,22 @@ export function LocationPage() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-2 text-muted-foreground">
-                            <div className="flex justify-between">
+                            <div className="flex justify-between items-center">
                                 <span>Senin - Jumat:</span>
-                                <span className="font-medium text-foreground">
-                                    {!isSettingsLoading && hoursWeekday}
+                                <span className="font-medium text-foreground min-w-[100px] text-right">
+                                    {isSettingsLoading ? <Skeleton className="h-4 w-24 ml-auto" /> : <span className="animate-in fade-in duration-700">{hoursWeekday}</span>}
                                 </span>
                             </div>
-                            <div className="flex justify-between">
+                            <div className="flex justify-between items-center">
                                 <span>Sabtu:</span>
-                                <span className="font-medium text-foreground">
-                                    {!isSettingsLoading && hoursSaturday}
+                                <span className="font-medium text-foreground min-w-[100px] text-right">
+                                    {isSettingsLoading ? <Skeleton className="h-4 w-24 ml-auto" /> : <span className="animate-in fade-in duration-700">{hoursSaturday}</span>}
                                 </span>
                             </div>
-                            <div className="flex justify-between">
+                            <div className="flex justify-between items-center">
                                 <span>Minggu:</span>
-                                <span className="font-medium text-foreground">
-                                    {!isSettingsLoading && hoursSunday}
+                                <span className="font-medium text-foreground min-w-[100px] text-right">
+                                    {isSettingsLoading ? <Skeleton className="h-4 w-24 ml-auto" /> : <span className="animate-in fade-in duration-700">{hoursSunday}</span>}
                                 </span>
                             </div>
                         </CardContent>

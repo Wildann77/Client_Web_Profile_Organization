@@ -1,6 +1,7 @@
 import { Target, Compass } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useSetting, usePublicSettings } from '@/features/settings/hooks/useSettings';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export function VisionMissionPage() {
     const { isLoading: isSettingsLoading } = usePublicSettings();
@@ -33,9 +34,13 @@ export function VisionMissionPage() {
                         <CardTitle className="text-2xl font-bold">Visi Kami</CardTitle>
                     </CardHeader>
                     <CardContent className="flex-1 text-center px-8 pb-8">
-                        <p className="text-lg leading-relaxed text-muted-foreground">
-                            {!isSettingsLoading && vision && <>&ldquo;{vision}&rdquo;</>}
-                        </p>
+                        <div className="text-lg leading-relaxed text-muted-foreground min-h-[4rem] flex items-center justify-center">
+                            {isSettingsLoading ? (
+                                <Skeleton className="h-6 w-full max-w-md" />
+                            ) : (
+                                vision && <p className="animate-in fade-in duration-700">&ldquo;{vision}&rdquo;</p>
+                            )}
+                        </div>
                     </CardContent>
                 </Card>
 
@@ -49,12 +54,26 @@ export function VisionMissionPage() {
                     </CardHeader>
                     <CardContent className="flex-1 px-8 pb-8">
                         <ul className="space-y-4 text-muted-foreground">
-                            {!isSettingsLoading && missions.map((m, i) => (
-                                <li key={i} className="flex gap-3 items-start">
-                                    <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-primary mt-2.5" />
-                                    <span>{m}</span>
-                                </li>
-                            ))}
+                            {isSettingsLoading ? (
+                                <>
+                                    <li className="flex gap-3 items-start">
+                                        <Skeleton className="h-4 w-full" />
+                                    </li>
+                                    <li className="flex gap-3 items-start">
+                                        <Skeleton className="h-4 w-5/6" />
+                                    </li>
+                                    <li className="flex gap-3 items-start">
+                                        <Skeleton className="h-4 w-4/5" />
+                                    </li>
+                                </>
+                            ) : (
+                                missions.map((m, i) => (
+                                    <li key={i} className="flex gap-3 items-start animate-in fade-in slide-in-from-bottom-2 duration-500" style={{ animationDelay: `${i * 100} ms` }}>
+                                        <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-primary mt-2.5" />
+                                        <span>{m}</span>
+                                    </li>
+                                ))
+                            )}
                         </ul>
                     </CardContent>
                 </Card>

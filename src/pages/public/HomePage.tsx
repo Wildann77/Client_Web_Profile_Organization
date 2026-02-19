@@ -95,16 +95,34 @@ export const HomePage = () => {
             Organisasi Islam Berkemajuan
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6 drop-shadow-lg text-white">
-            Selamat Datang di{' '}
-            <span className="text-white dark:text-blue-400 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-colors duration-300">
-              {!isSettingsLoading && siteName}
-            </span>
+          <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6 drop-shadow-lg text-white min-h-[1.2em]">
+            {isSettingsLoading ? (
+              <div className="flex flex-col items-center gap-4">
+                <Skeleton className="h-10 w-64 bg-white/20" />
+                <Skeleton className="h-10 w-48 bg-white/20" />
+              </div>
+            ) : (
+              <span className="animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                Selamat Datang di{' '}
+                <span className="text-white dark:text-blue-400 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-colors duration-300">
+                  {siteName}
+                </span>
+              </span>
+            )}
           </h1>
 
-          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-10 leading-relaxed font-sans">
-            {!isSettingsLoading && heroSubtitle}
-          </p>
+          <div className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-10 leading-relaxed font-sans min-h-[3rem]">
+            {isSettingsLoading ? (
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-full bg-white/20" />
+                <Skeleton className="h-4 w-4/5 bg-white/20 mx-auto" />
+              </div>
+            ) : (
+              <p className="animate-in fade-in slide-in-from-bottom-3 duration-1000 delay-200 fill-mode-both">
+                {heroSubtitle}
+              </p>
+            )}
+          </div>
 
           <div className="flex flex-wrap gap-4 justify-center">
             <Link to="/artikel">
