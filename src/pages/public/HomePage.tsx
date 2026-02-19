@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 import { usePublicArticles } from '@/features/articles/hooks/useArticles';
 import { ArticleList } from '@/features/articles/components/ArticleList';
 import { ArticleListSkeleton } from '@/features/articles/components/ArticleListSkeleton';
@@ -7,6 +8,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, Target, History, Users, MapPin, Newspaper } from 'lucide-react';
 
 import { useSetting } from '@/features/settings/hooks/useSettings';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useState } from 'react';
 
 const profileLinks = [
   {
@@ -36,20 +39,26 @@ const profileLinks = [
 ];
 
 export const HomePage = () => {
-  const { data, isLoading } = usePublicArticles({ limit: 6 });
+  const { data, isLoading: isArticlesLoading } = usePublicArticles({ limit: 6 });
   const siteName = useSetting('site_name');
   const heroImageUrl = useSetting('hero_image_url');
   const heroSubtitle = useSetting('hero_subtitle');
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
     <div className="space-y-0">
       {/* ── Hero Section ── */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
         {/* Cover image */}
+        {!imageLoaded && <Skeleton className="absolute inset-0 w-full h-full rounded-none" />}
         <img
           src={heroImageUrl}
           alt={`${siteName || 'Muhammadiyah'} hero cover`}
-          className="absolute inset-0 w-full h-full object-cover"
+          className={cn(
+            "absolute inset-0 w-full h-full object-cover transition-opacity duration-700",
+            imageLoaded ? "opacity-100" : "opacity-0"
+          )}
+          onLoad={() => setImageLoaded(true)}
         />
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
@@ -141,7 +150,7 @@ export const HomePage = () => {
             </Link>
           </div>
 
-          {isLoading ? (
+          {isArticlesLoading ? (
             <ArticleListSkeleton count={3} columns={3} />
           ) : (
             <ArticleList articles={data?.articles || []} columns={3} />
