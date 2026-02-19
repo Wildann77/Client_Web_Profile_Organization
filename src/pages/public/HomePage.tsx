@@ -1,15 +1,14 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { cn } from '@/lib/utils';
 import { usePublicArticles } from '@/features/articles/hooks/useArticles';
 import { ArticleList } from '@/features/articles/components/ArticleList';
 import { ArticleListSkeleton } from '@/features/articles/components/ArticleListSkeleton';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, Target, History, Users, MapPin, Newspaper } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 import { useSetting } from '@/features/settings/hooks/useSettings';
-import { Spinner } from '@/components/ui/spinner';
-import { useState } from 'react';
 
 const profileLinks = [
   {
@@ -39,42 +38,35 @@ const profileLinks = [
 ];
 
 export const HomePage = () => {
-  const { data, isLoading: isArticlesLoading } = usePublicArticles({ limit: 6 });
+  const { data, isLoading } = usePublicArticles({ limit: 6 });
   const siteName = useSetting('site_name');
   const heroImageUrl = useSetting('hero_image_url');
   const heroSubtitle = useSetting('hero_subtitle');
-  const [imageLoaded, setImageLoaded] = useState(false);
+  const [heroLoading, setHeroLoading] = useState(true);
 
   return (
     <div className="space-y-0">
       {/* ── Hero Section ── */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-        {/* Cover image */}
-        {!imageLoaded && (
-          <div className="absolute inset-0 z-50 flex items-center justify-center bg-background">
-            <div className="flex flex-col items-center gap-2">
-              <Spinner className="w-8 h-8 text-primary" />
-              <p className="text-sm text-muted-foreground animate-pulse">Memuat Gambar...</p>
-            </div>
-          </div>
+        {/* Cover image with Loading Skeleton */}
+        {heroImageUrl && heroLoading && (
+          <Skeleton className="absolute inset-0 w-full h-full bg-muted/20" />
         )}
-        <img
-          src={heroImageUrl}
-          alt={`${siteName || 'Muhammadiyah'} hero cover`}
-          className={cn(
-            "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
-            imageLoaded ? "opacity-100" : "opacity-0"
-          )}
-          onLoad={() => setImageLoaded(true)}
-        />
+        {heroImageUrl && (
+          <img
+            src={heroImageUrl}
+            alt={`${siteName || 'Muhammadiyah'} hero cover`}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${heroLoading ? 'opacity-0' : 'opacity-100'
+              }`}
+            onLoad={() => setHeroLoading(false)}
+            onError={() => setHeroLoading(false)}
+          />
+        )}
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
 
         {/* Content */}
-        <div className={cn(
-          "relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white transition-all duration-1000 transform",
-          imageLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-        )}>
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-sm font-medium mb-6">
             <Newspaper className="w-4 h-4" />
@@ -160,7 +152,7 @@ export const HomePage = () => {
             </Link>
           </div>
 
-          {isArticlesLoading ? (
+          {isLoading ? (
             <ArticleListSkeleton count={3} columns={3} />
           ) : (
             <ArticleList articles={data?.articles || []} columns={3} />
