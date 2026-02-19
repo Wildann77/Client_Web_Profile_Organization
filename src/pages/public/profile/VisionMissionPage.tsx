@@ -1,8 +1,9 @@
 import { Target, Compass } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useSetting } from '@/features/settings/hooks/useSettings';
+import { useSetting, usePublicSettings } from '@/features/settings/hooks/useSettings';
 
 export function VisionMissionPage() {
+    const { isLoading: isSettingsLoading } = usePublicSettings();
     const vision = useSetting('org_vision');
     const mission1 = useSetting('org_mission_1');
     const mission2 = useSetting('org_mission_2');
@@ -33,7 +34,7 @@ export function VisionMissionPage() {
                     </CardHeader>
                     <CardContent className="flex-1 text-center px-8 pb-8">
                         <p className="text-lg leading-relaxed text-muted-foreground">
-                            &ldquo;{vision || 'Terwujudnya masyarakat Islam yang sebenar-benarnya yang diridhai Allah SWT.'}&rdquo;
+                            {!isSettingsLoading && vision && <>&ldquo;{vision}&rdquo;</>}
                         </p>
                     </CardContent>
                 </Card>
@@ -48,29 +49,12 @@ export function VisionMissionPage() {
                     </CardHeader>
                     <CardContent className="flex-1 px-8 pb-8">
                         <ul className="space-y-4 text-muted-foreground">
-                            {missions.length > 0 ? (
-                                missions.map((m, i) => (
-                                    <li key={i} className="flex gap-3 items-start">
-                                        <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-primary mt-2.5" />
-                                        <span>{m}</span>
-                                    </li>
-                                ))
-                            ) : (
-                                <>
-                                    <li className="flex gap-3 items-start">
-                                        <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-primary mt-2.5" />
-                                        <span>Menegakkan keyakinan tauhid yang murni sesuai dengan ajaran Allah SWT yang dibawa oleh para Rasul.</span>
-                                    </li>
-                                    <li className="flex gap-3 items-start">
-                                        <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-primary mt-2.5" />
-                                        <span>Menyebarluaskan ajaran Islam yang bersumber pada Al-Qur&apos;an dan As-Sunnah.</span>
-                                    </li>
-                                    <li className="flex gap-3 items-start">
-                                        <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-primary mt-2.5" />
-                                        <span>Mewujudkan amal usaha dan amal shalih dalam kehidupan perseorangan, keluarga, dan masyarakat.</span>
-                                    </li>
-                                </>
-                            )}
+                            {!isSettingsLoading && missions.map((m, i) => (
+                                <li key={i} className="flex gap-3 items-start">
+                                    <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-primary mt-2.5" />
+                                    <span>{m}</span>
+                                </li>
+                            ))}
                         </ul>
                     </CardContent>
                 </Card>

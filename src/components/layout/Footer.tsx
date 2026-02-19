@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Facebook, Instagram, Youtube, Mail, Phone, MapPin } from 'lucide-react';
-import { useSetting } from '@/features/settings/hooks/useSettings';
+import { useSetting, usePublicSettings } from '@/features/settings/hooks/useSettings';
 
 export function Footer() {
+    const { isLoading: isSettingsLoading } = usePublicSettings();
     const siteName = useSetting('site_name');
     const siteDescription = useSetting('site_description');
     const contactEmail = useSetting('contact_email');
@@ -12,8 +13,8 @@ export function Footer() {
     const socialInstagram = useSetting('social_instagram');
     const socialYoutube = useSetting('social_youtube');
 
-    const displayName = siteName || 'Organisasi Kami';
-    const displayDesc = siteDescription || 'Website resmi organisasi kami. Memberikan informasi dan pelayanan terbaik untuk masyarakat.';
+    const displayName = !isSettingsLoading ? siteName : '';
+    const displayDesc = !isSettingsLoading ? siteDescription : '';
 
     return (
         <footer className="bg-gradient-to-br from-primary/5 to-primary/10 border-t py-12 mt-auto">

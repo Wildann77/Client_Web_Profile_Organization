@@ -1,11 +1,11 @@
 import { Calendar, History, Building2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { useSetting } from '@/features/settings/hooks/useSettings';
+import { useSetting, usePublicSettings } from '@/features/settings/hooks/useSettings';
 
 // Render teks multi-paragraf (pisah berdasarkan \n\n)
-function MultiParagraph({ text, fallback }: { text: string; fallback: string }) {
-    const content = text || fallback;
+function MultiParagraph({ text }: { text: string }) {
+    const content = text || '';
     const paragraphs = content.split('\n\n').filter(Boolean);
     return (
         <>
@@ -19,6 +19,7 @@ function MultiParagraph({ text, fallback }: { text: string; fallback: string }) 
 }
 
 export function HistoryPage() {
+    const { isLoading: isSettingsLoading } = usePublicSettings();
     const founding = useSetting('history_founding');
     const development = useSetting('history_development');
     const present = useSetting('history_present');
@@ -49,10 +50,7 @@ export function HistoryPage() {
                     </div>
                     <Card className="border-l-4 border-l-primary shadow-sm hover:shadow-md transition-shadow">
                         <CardContent className="pt-6 text-muted-foreground leading-relaxed">
-                            <MultiParagraph
-                                text={founding}
-                                fallback="Muhammadiyah didirikan di Kampung Kauman Yogyakarta pada tanggal 8 Dzulhijjah 1330 H bertepatan dengan tanggal 18 November 1912 M oleh K.H. Ahmad Dahlan."
-                            />
+                            {!isSettingsLoading && <MultiParagraph text={founding} />}
                         </CardContent>
                     </Card>
                 </section>
@@ -69,10 +67,7 @@ export function HistoryPage() {
                     </div>
                     <Card className="border-l-4 border-l-primary shadow-sm hover:shadow-md transition-shadow">
                         <CardContent className="pt-6 text-muted-foreground leading-relaxed">
-                            <MultiParagraph
-                                text={development}
-                                fallback="Seiring berjalannya waktu, berbagai amal usaha mulai didirikan untuk melayani masyarakat."
-                            />
+                            {!isSettingsLoading && <MultiParagraph text={development} />}
                         </CardContent>
                     </Card>
                 </section>
@@ -87,10 +82,7 @@ export function HistoryPage() {
                     </div>
                     <Card className="border-l-4 border-l-primary shadow-sm hover:shadow-md transition-shadow bg-primary/5">
                         <CardContent className="pt-6 text-muted-foreground leading-relaxed">
-                            <MultiParagraph
-                                text={present}
-                                fallback="Saat ini, Muhammadiyah di wilayah terus beradaptasi dengan tantangan zaman."
-                            />
+                            {!isSettingsLoading && <MultiParagraph text={present} />}
                         </CardContent>
                     </Card>
                 </section>
